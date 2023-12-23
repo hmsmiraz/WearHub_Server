@@ -29,6 +29,7 @@ async function run() {
     // collections
     const userCollection = client.db("WearHubDB").collection("users");
     const productCollection = client.db("WearHubDB").collection("products");
+    const cartCollection = client.db("WearHubDB").collection("carts");
 
     // users
     app.get("/users",  async (req, res) => {
@@ -60,7 +61,6 @@ async function run() {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) };
       const result = await productCollection.findOne(query);
-      //console.log(result);
       res.send(result);
     });
 
@@ -70,6 +70,25 @@ async function run() {
       const result = await productCollection.deleteOne(query);
       res.send(result);
     });
+
+    // cart api's
+    app.get("/carts",  async (req, res) => {
+        const cursor = cartCollection.find();
+        const result = await cursor.toArray();
+        res.send(result);
+      });
+  
+      app.post("/carts", async (req, res) => {
+        const blogs = req.body;
+        const result = await cartCollection.insertOne(blogs);
+        res.send(result);
+      });
+      app.delete("/carts/:id",  async (req, res) => {
+        const id = req.params.id;
+        const query = { _id: new ObjectId(id) };
+        const result = await cartCollection.deleteOne(query);
+        res.send(result);
+      });
 
     
     // Send a ping to confirm a successful connection
